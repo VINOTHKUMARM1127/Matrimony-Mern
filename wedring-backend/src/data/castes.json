@@ -1,0 +1,11 @@
+{
+  "Hindu": ["Brahmin", "Kshatriya", "Vaishya", "Sudra", "Adi Dravidar", "Arunthathiyar", "Chettiar", "Gounder", "Mudaliar", "Nadar", "Naicker", "Naidu", "Pillai", "Reddiar", "Thevar", "Vanniyar", "Vellalar", "Yadav", "Iyer", "Iyengar", "Lingayat", "Maratha", "Nair", "Ezhava", "Kuruba", "Vokkaligar", "SC", "ST", "OBC", "Other"],
+  "Muslim": ["Sunni", "Shia", "Ahmadiyya", "Bohra", "Khoja", "Memon", "Pathan", "Syed", "Sheikh", "Mughal", "Rowther", "Lebbai", "Mapilla", "Other"],
+  "Christian": ["Roman Catholic", "Protestant", "Syrian Catholic", "Syrian Orthodox", "Marthomite", "CSI", "CNI", "Pentecostal", "Evangelical", "Anglo Indian", "Latin Catholic", "Jacobite", "Other"],
+  "Sikh": ["Jat Sikh", "Khatri", "Ramgarhia", "Arora", "Saini", "Mazhabi", "Other"],
+  "Jain": ["Digambar", "Shwetambar", "Other"],
+  "Buddhist": ["Mahayana", "Hinayana", "Theravada", "Other"],
+  "Parsi": ["Parsi", "Irani", "Other"],
+  "Jewish": ["Jewish", "Other"],
+  "Other": ["Inter-Religion", "No Religion", "Other"]
+}

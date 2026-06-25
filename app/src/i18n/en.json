@@ -1,0 +1,98 @@
+{
+  "app_name": "Wedring Matrimony",
+  "tagline": "Find Your Perfect Match",
+  "login": {
+    "title": "Welcome Back",
+    "phone_tab": "Phone",
+    "email_tab": "Email",
+    "phone_label": "Mobile Number",
+    "phone_placeholder": "Enter 10-digit mobile number",
+    "email_label": "Email Address",
+    "password_label": "Password",
+    "send_otp": "Send OTP",
+    "login": "Login",
+    "signup": "Create Account",
+    "no_account": "Don't have an account?",
+    "has_account": "Already have an account?",
+    "terms": "By continuing, you agree to our Terms of Service & Privacy Policy"
+  },
+  "otp": {
+    "title": "Verify OTP",
+    "subtitle": "We've sent a 6-digit code to",
+    "verify": "Verify & Continue",
+    "resend": "Resend OTP",
+    "resend_in": "Resend OTP in"
+  },
+  "registration": {
+    "basic_info": "Tell us about yourself",
+    "religion": "Religion & Community",
+    "education": "Education & Career",
+    "family": "Family & Location",
+    "horoscope": "Horoscope Details",
+    "lifestyle": "Lifestyle & Interests",
+    "photos": "Add Your Photos",
+    "partner_pref": "Partner Preferences",
+    "next": "Next",
+    "back": "Back",
+    "skip": "Skip",
+    "complete": "Complete Profile"
+  },
+  "home": {
+    "welcome": "Welcome back",
+    "find_match": "Find your perfect match today",
+    "new_matches": "New Matches",
+    "active_now": "Active Now",
+    "premium": "Premium",
+    "recommended": "Recommended for You",
+    "recently_active": "Recently Active",
+    "premium_profiles": "Premium Profiles"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search by name, city, profession...",
+    "filters": "Filters",
+    "apply": "Apply Filters",
+    "clear": "Clear All",
+    "results": "profiles found",
+    "no_results": "No profiles found",
+    "sort_recent": "Recently Active",
+    "sort_newest": "Newest First"
+  },
+  "chat": {
+    "title": "Messages",
+    "no_messages": "No messages yet",
+    "type_message": "Type a message...",
+    "send": "Send"
+  },
+  "profile": {
+    "edit": "Edit Profile",
+    "premium": "Premium Plans",
+    "settings": "Settings",
+    "logout": "Logout",
+    "verified": "Verified",
+    "about": "About",
+    "education": "Education",
+    "family": "Family",
+    "horoscope": "Horoscope",
+    "lifestyle": "Lifestyle",
+    "partner_pref": "Partner Preferences"
+  },
+  "premium": {
+    "title": "Upgrade to Premium",
+    "subtitle": "Unlock all features and find your perfect match faster",
+    "subscribe": "Subscribe Now",
+    "gold": "Gold",
+    "prime_gold": "Prime Gold",
+    "till_u_marry": "Till U Marry"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try Again",
+    "cancel": "Cancel",
+    "save": "Save",
+    "done": "Done",
+    "yes": "Yes",
+    "no": "No"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "MATRIMONY",
+    "slug": "MATRIMONY",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "primaryColor": "#E8631A",
+    "scheme": "lotmatch",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E8631A"
+      },
+      "package": "com.vinoth_kumarm_27.MATRIMONY"
+    },
+    "web": {},
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos.",
+          "colors": {
+            "cropToolbarColor": "#E8631A",
+            "cropToolbarIconColor": "#FFFFFF",
+            "cropToolbarActionTextColor": "#FFFFFF",
+            "cropToolbarBackButtonIconColor": "#FFFFFF",
+            "cropScreenBackgroundColor": "#121212"
+          },
+          "dark": {
+            "colors": {
+              "cropToolbarColor": "#E8631A",
+              "cropToolbarIconColor": "#FFFFFF",
+              "cropToolbarActionTextColor": "#FFFFFF",
+              "cropToolbarBackButtonIconColor": "#FFFFFF",
+              "cropScreenBackgroundColor": "#121212"
+            }
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "1a4e062a-8329-44f6-9160-4ea2303cebf4"
+      }
+    }
+  }
+}

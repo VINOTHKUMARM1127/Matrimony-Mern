@@ -1,0 +1,10 @@
+{
+  "Chennai": ["Adyar", "Anna Nagar", "T. Nagar", "Velachery", "Tambaram", "Chromepet", "Porur", "Ambattur", "Perambur", "Mylapore"],
+  "Coimbatore": ["RS Puram", "Gandhipuram", "Peelamedu", "Singanallur", "Saravanampatti", "Sulur"],
+  "Madurai": ["Anna Nagar", "KK Nagar", "Tallakulam", "Villapuram", "Thirunagar"],
+  "Bengaluru": ["Koramangala", "Whitefield", "Indiranagar", "Jayanagar", "Marathahalli", "Electronic City", "HSR Layout", "BTM Layout"],
+  "Hyderabad": ["Banjara Hills", "Jubilee Hills", "Gachibowli", "Madhapur", "Kukatpally", "Secunderabad", "Ameerpet"],
+  "Mumbai": ["Andheri", "Bandra", "Borivali", "Dadar", "Goregaon", "Malad", "Thane", "Navi Mumbai", "Powai"],
+  "Pune": ["Kothrud", "Hinjewadi", "Wakad", "Baner", "Hadapsar", "Viman Nagar", "Shivaji Nagar"],
+  "Delhi": ["Connaught Place", "Dwarka", "Rohini", "Saket", "Lajpat Nagar", "Karol Bagh", "Janakpuri"]
+}
