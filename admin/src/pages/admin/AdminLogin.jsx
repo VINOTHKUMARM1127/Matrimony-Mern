@@ -12,7 +12,7 @@ const AdminLogin = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { signIn, isAuthenticated, user } = useAuthStore();
+  const { signIn, signOut, isAuthenticated, user } = useAuthStore();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -20,11 +20,12 @@ const AdminLogin = () => {
     setIsLoading(true);
 
     try {
-      const isAdmin = await adminApi.checkIsAdmin(email);
+      await signIn(email, password);
+      const isAdmin = await adminApi.checkIsAdmin();
       if (!isAdmin) {
+        await signOut();
         throw new Error('Access denied. Admin privileges required.');
       }
-      await signIn(email, password);
       navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Login failed');

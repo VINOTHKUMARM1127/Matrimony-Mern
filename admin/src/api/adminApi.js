@@ -14,6 +14,14 @@ export const checkIsAdmin = async () => {
 };
 
 /**
+ * Fetch Subscription Plans
+ */
+export const fetchSubscriptionPlans = async () => {
+  const data = await apiClient.get('/admin/plans');
+  return data.data || data;
+};
+
+/**
  * Fetch all users with their memberships and photos
  */
 export const fetchAllUsers = async () => {

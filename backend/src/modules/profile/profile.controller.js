@@ -3,7 +3,7 @@
  */
 import * as profileService from './profile.service.js';
 import * as profileSearch from './profile.search.js';
-import { getPagination } from '../../utils/pagination.js';
+import { parsePagination } from '../../utils/pagination.js';
 import { success, error } from '../../utils/response.js';
 
 export async function updateGeneric(req, res, next) {
@@ -78,7 +78,7 @@ export async function updatePartnerPreferences(req, res, next) {
 
 export async function searchProfiles(req, res, next) {
   try {
-    const { limit, offset } = getPagination(req.query);
+    const { limit, offset } = parsePagination(req.query);
     // Parse filters from query
     const filters = {
       gender: req.query.gender,

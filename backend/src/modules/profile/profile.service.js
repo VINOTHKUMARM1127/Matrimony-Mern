@@ -52,22 +52,32 @@ export async function getOwnProfile(userId) {
     .select(`
       *,
       profile_photos (*),
-      partner_preferences (*),
-      user_memberships (*)
+      partner_preferences (*)
     `)
-    .eq('user_id', userId)
-    .single();
-
-  if (error) throw error;
+    .eq('id', userId)
+    .maybeSingle(); // Use maybeSingle in case profile isn't created yet
 
   // Also fetch user table data
-  const { data: userData } = await supabaseAdmin
+  const { data: userData, error: userError } = await supabaseAdmin
     .from('users')
-    .select('email, mobile, profile_for, mother_tongue, membership_tier, profile_complete_pct, is_active')
+    .select('email, phone, creating_for, mother_tongue, is_verified')
     .eq('id', userId)
-    .single();
+    .maybeSingle();
 
-  return { ...data, ...userData };
+  if (userError) throw userError;
+
+  const profileData = data || {};
+  return { 
+    ...profileData, 
+    ...userData,
+    mobile: userData?.phone,
+    profile_for: userData?.creating_for,
+    membership_tier: profileData.tier || 'free',
+    profile_complete_pct: profileData.profile_completion || 0,
+    full_name: profileData.name,
+    dob: profileData.date_of_birth,
+    user_memberships: [] // Provide empty array to avoid breaking frontend logic
+  };
 }
 
 /**
@@ -80,24 +90,23 @@ export async function getPublicProfile(targetUserId, viewerUserId) {
       *,
       profile_photos (*)
     `)
-    .eq('user_id', targetUserId)
+    .eq('id', targetUserId)
     .single();
 
   if (error) throw error;
 
   // Check viewer's membership tier for contact/horoscope visibility
   const { data: viewer } = await supabaseAdmin
-    .from('users')
-    .select('membership_tier')
+    .from('profiles')
+    .select('tier')
     .eq('id', viewerUserId)
-    .single();
+    .maybeSingle();
 
-  const isFree = !viewer || viewer.membership_tier === 'free';
+  const isFree = !viewer || viewer.tier === 'free';
 
   // Mask sensitive fields for free users
   const result = { ...data };
   if (isFree) {
-    result.mobile = null;
     result._contact_locked = true;
     result._horoscope_locked = true;
   }
@@ -112,8 +121,8 @@ export async function upsertProfileSection(userId, fields) {
   const { data, error } = await supabaseAdmin
     .from('profiles')
     .upsert(
-      { user_id: userId, ...fields, updated_at: new Date().toISOString() },
-      { onConflict: 'user_id' }
+      { id: userId, ...fields, updated_at: new Date().toISOString() },
+      { onConflict: 'id' }
     )
     .select()
     .single();
@@ -123,8 +132,8 @@ export async function upsertProfileSection(userId, fields) {
   // Recalculate completion
   const pct = calculateCompletionPct(data);
   await supabaseAdmin
-    .from('users')
-    .update({ profile_complete_pct: pct, updated_at: new Date().toISOString() })
+    .from('profiles')
+    .update({ profile_completion: pct, updated_at: new Date().toISOString() })
     .eq('id', userId);
 
   return { ...data, profile_complete_pct: pct };

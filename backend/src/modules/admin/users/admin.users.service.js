@@ -15,8 +15,8 @@ export async function getDashboardStats() {
     { data: monthPayments },
     { count: activePlans },
   ] = await Promise.all([
-    supabaseAdmin.from('users').select('id', { count: 'exact', head: true }).eq('is_active', true),
-    supabaseAdmin.from('users').select('id', { count: 'exact', head: true }).neq('membership_tier', 'free'),
+    supabaseAdmin.from('profiles').select('id', { count: 'exact', head: true }).eq('is_active', true),
+    supabaseAdmin.from('profiles').select('id', { count: 'exact', head: true }).neq('tier', 'free'),
     supabaseAdmin.from('payments').select('amount').eq('payment_status', 'verified')
       .gte('created_at', new Date().toISOString().split('T')[0]),
     supabaseAdmin.from('payments').select('amount').eq('payment_status', 'verified')
@@ -46,9 +46,11 @@ export async function listUsers({ page = 1, limit = 20, tier, search }) {
     .from('users')
     .select(`
       *,
-      profiles!inner (full_name, gender, dob, city, state, religion),
-      profile_photos (id, r2_url, is_primary),
-      user_memberships (id, status, plan_id, expires_at, contact_credits_remaining, interest_credits_remaining)
+      profiles!inner (
+        name, gender, date_of_birth, city, state, religion,
+        profile_photos (id, photo_url, is_primary),
+        user_memberships (id, status, plan_id, tier, start_date, expiry_date, contact_credits_remaining, interest_credits_remaining)
+      )
     `, { count: 'exact' })
     .eq('is_active', true)
     .order('created_at', { ascending: false });
@@ -58,7 +60,7 @@ export async function listUsers({ page = 1, limit = 20, tier, search }) {
   }
 
   if (search) {
-    query = query.or(`email.ilike.%${search}%,mobile.ilike.%${search}%,profiles.full_name.ilike.%${search}%`);
+    query = query.or(`email.ilike.%${search}%,mobile.ilike.%${search}%,profiles.name.ilike.%${search}%`);
   }
 
   query = query.range(offset, offset + limit - 1);
@@ -66,7 +68,26 @@ export async function listUsers({ page = 1, limit = 20, tier, search }) {
   const { data, error, count } = await query;
   if (error) throw error;
 
-  return { users: data || [], total: count || 0 };
+  const users = (data || []).map(u => {
+    const p = u.profiles || {};
+    // Fallback to avoid breaking frontend
+    p.full_name = p.name;
+    p.dob = p.date_of_birth;
+    
+    const photos = (p.profile_photos || []).map(photo => ({
+      ...photo,
+      r2_url: photo.photo_url
+    }));
+
+    return {
+      ...u,
+      profiles: p,
+      profile_photos: photos,
+      user_memberships: p.user_memberships || []
+    };
+  });
+
+  return { users, total: count || 0 };
 }
 
 /**
@@ -77,15 +98,31 @@ export async function getUserById(userId) {
     .from('users')
     .select(`
       *,
-      profiles (*),
-      profile_photos (*),
-      partner_preferences (*),
-      user_memberships (*, plan:plan_id (*))
+      profiles (
+        *,
+        profile_photos (*),
+        partner_preferences (*),
+        user_memberships (*, plan:plan_id (*))
+      )
     `)
     .eq('id', userId)
     .single();
 
   if (error) throw error;
+  
+  if (data) {
+    const p = data.profiles || {};
+    p.full_name = p.name;
+    p.dob = p.date_of_birth;
+    
+    data.profile_photos = (p.profile_photos || []).map(photo => ({
+      ...photo,
+      r2_url: photo.photo_url
+    }));
+    data.partner_preferences = p.partner_preferences || [];
+    data.user_memberships = p.user_memberships || [];
+  }
+  
   return data;
 }
 
