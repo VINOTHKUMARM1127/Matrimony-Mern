@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import * as adminApi from '../../api/adminApi';
 import Card from '../../components/common/Card';
 import Button from '../../components/common/Button';
-import { SlidersHorizontal, Play, Send, TrendingUp, RefreshCw, User, Check, X } from 'lucide-react';
+import { SlidersHorizontal, Play, Send, TrendingUp, RefreshCw, User, Check, X, FileText } from 'lucide-react';
 
 const TIERS = [
   { id: 'free', label: 'Free', color: 'bg-neutral-100 text-neutral-700' },
@@ -31,11 +31,26 @@ const DistributionManager = () => {
   const [isSaving, setIsSaving] = useState(false);
 
   const [health, setHealth] = useState({ active_users: 0, total_unlocked: 0 });
+  const [logs, setLogs] = useState([]);
+  const [loadingLogs, setLoadingLogs] = useState(true);
 
   useEffect(() => {
     loadPlans();
     loadHealth();
+    loadLogs();
   }, []);
+
+  const loadLogs = async () => {
+    try {
+      setLoadingLogs(true);
+      const data = await adminApi.fetchDistributionHistory(1, 50);
+      setLogs(data.logs || data || []);
+    } catch (err) {
+      console.error('Failed to load logs:', err);
+    } finally {
+      setLoadingLogs(false);
+    }
+  };
 
   const loadPlans = async () => {
     try {
@@ -50,22 +65,12 @@ const DistributionManager = () => {
 
   const loadHealth = async () => {
     try {
-      const { count: activeUsers } = await adminApi.supabase
-        .from('user_memberships')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'active')
-        .neq('tier', 'free');
-        
-      const { count: totalUnlocked } = await adminApi.supabase
-        .from('user_profile_pool')
-        .select('*', { count: 'exact', head: true });
-        
-      const emptyUsersCount = await adminApi.fetchPoolHealth();
+      const health = await adminApi.fetchDistributionHealth();
         
       setHealth({ 
-        active_users: activeUsers || 0, 
-        total_unlocked: totalUnlocked || 0,
-        empty_users: emptyUsersCount || 0
+        active_users: health.active_users || 0, 
+        total_unlocked: health.total_unlocked || 0,
+        empty_users: health.empty_users || 0
       });
     } catch (err) {
       console.error('Failed to load health stats:', err);
@@ -80,6 +85,7 @@ const DistributionManager = () => {
       setLastRunResult(result);
       window.alert(`Distribution complete! ${result?.users_updated || 0} users updated.`);
       loadHealth(); // Refresh health stats
+      loadLogs();
     } catch (err) {
       window.alert('Failed: ' + (err.message || 'Unknown error'));
     } finally {
@@ -105,6 +111,8 @@ const DistributionManager = () => {
       window.alert(`Successfully pushed! Processed ${result.users_processed} users.`);
       setPushAllMatches(0);
       setPushDailyUpdates(0);
+      loadHealth();
+      loadLogs();
     } catch (err) {
       window.alert('Push Failed: ' + (err.message || 'Unknown error'));
     } finally {
@@ -370,6 +378,74 @@ const DistributionManager = () => {
               </div>
             </div>
           </div>
+        </div>
+      </Card>
+
+      {/* Distribution Logs */}
+      <Card className="overflow-hidden border border-neutral-200 mt-8">
+        <div className="px-6 py-4 border-b border-neutral-100 bg-neutral-50/80">
+          <h2 className="text-base font-bold text-neutral-900 flex items-center gap-2">
+            <FileText size={18} className="text-blue-500" />
+            Recent Distribution Logs
+          </h2>
+          <p className="text-xs text-neutral-500 mt-1">
+            History of profile distributions (Initial, Daily, Manual).
+          </p>
+        </div>
+        <div className="p-0 overflow-x-auto">
+          {loadingLogs ? (
+            <div className="p-8 text-center text-neutral-500">Loading logs...</div>
+          ) : logs.length === 0 ? (
+            <div className="p-8 text-center text-neutral-500">No distribution logs found.</div>
+          ) : (
+            <table className="w-full text-sm">
+              <thead className="bg-neutral-50 border-b border-neutral-200">
+                <tr className="text-left text-neutral-500">
+                  <th className="px-6 py-3 font-semibold text-xs uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-3 font-semibold text-xs uppercase tracking-wider">User</th>
+                  <th className="px-6 py-3 font-semibold text-xs uppercase tracking-wider">Tier</th>
+                  <th className="px-6 py-3 font-semibold text-xs uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-3 font-semibold text-xs uppercase tracking-wider">Section</th>
+                  <th className="px-6 py-3 font-semibold text-xs uppercase tracking-wider">Added</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-100 bg-white">
+                {logs.map((log) => (
+                  <tr key={log.id} className="hover:bg-neutral-50/50">
+                    <td className="px-6 py-4 whitespace-nowrap text-neutral-600">
+                      {new Date(log.distributed_at).toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {log.user ? (
+                        <div>
+                          <p className="font-medium text-neutral-900">{log.user.full_name || 'User'}</p>
+                          <p className="text-xs text-neutral-500">{log.user.email}</p>
+                        </div>
+                      ) : (
+                        <span className="text-neutral-500 italic">User {log.user_id?.slice(0, 8)}</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold capitalize ${
+                        TIERS.find(t => t.id === log.tier)?.color || 'bg-neutral-100 text-neutral-700'
+                      }`}>
+                        {log.tier}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-neutral-800 capitalize">
+                      {log.distribution_type}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-neutral-600">
+                      {log.section}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap font-mono text-primary-600 font-medium">
+                      +{log.profiles_added}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </Card>
 

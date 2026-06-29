@@ -122,6 +122,15 @@ export async function runInitialDistribution(userId, tier) {
 
     if (insertErr) {
       logger.error('Distribution insert error:', insertErr.message);
+    } else {
+      await supabaseAdmin.from('distribution_logs').insert({
+        user_id: userId,
+        tier: tier,
+        distribution_type: 'initial',
+        section: 'both',
+        profiles_added: rows.length / 2, // approximation
+        distributed_at: now,
+      });
     }
   }
 
@@ -230,6 +239,14 @@ export async function runDailyDistribution(userId, tier) {
 
   if (rows.length > 0) {
     await supabaseAdmin.from('user_distributed_profiles').insert(rows);
+    await supabaseAdmin.from('distribution_logs').insert({
+      user_id: userId,
+      tier: tier,
+      distribution_type: 'daily',
+      section: 'both',
+      profiles_added: newProfiles.length,
+      distributed_at: now,
+    });
   }
 
   // Update distribution state
@@ -330,6 +347,14 @@ export async function manualDistribution({ target, tier, userId: targetUserId, s
 
         if (rows.length > 0) {
           await supabaseAdmin.from('user_distributed_profiles').insert(rows);
+          await supabaseAdmin.from('distribution_logs').insert({
+            user_id: uid,
+            tier: tier || 'unknown',
+            distribution_type: 'manual',
+            section: section,
+            profiles_added: profiles.length,
+            distributed_at: now,
+          });
           totalDistributed += profiles.length;
         }
       }

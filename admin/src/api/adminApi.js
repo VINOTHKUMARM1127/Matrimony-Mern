@@ -17,8 +17,24 @@ export const checkIsAdmin = async () => {
  * Fetch Subscription Plans
  */
 export const fetchSubscriptionPlans = async () => {
-  const data = await apiClient.get('/admin/plans');
-  return data.data || data;
+  const [plansRes, distRes] = await Promise.all([
+    apiClient.get('/admin/plans'),
+    apiClient.get('/admin/distribution/config').catch(() => ({ data: [] }))
+  ]);
+  
+  const plans = plansRes.data || plansRes;
+  const dist = distRes.data || distRes || [];
+  
+  return plans.map(p => {
+    const d = dist.find(x => x.tier === p.name) || {};
+    return {
+      ...p,
+      initial_recommended_profiles: d.initial_count || 0,
+      daily_recommended_increment: d.daily_count || 0,
+      initial_daily_profiles: 0,
+      daily_profiles_increment: 0,
+    };
+  });
 };
 
 /**
@@ -27,6 +43,40 @@ export const fetchSubscriptionPlans = async () => {
 export const fetchAllUsers = async () => {
   const data = await apiClient.get('/admin/users?limit=1000');
   return data.data || data.users || data;
+};
+
+/**
+ * Update Subscription Plan (Membership + Distribution Config)
+ */
+export const updateSubscriptionPlan = async (tierName, planData) => {
+  // Update Membership Plan
+  const plansRes = await apiClient.get('/admin/plans');
+  const plan = (plansRes.data || plansRes).find(p => p.name === tierName);
+  
+  if (plan) {
+    const planUpdates = {};
+    if (planData.price_inr !== undefined) planUpdates.price = planData.price_inr;
+    if (planData.validity_days !== undefined) planUpdates.validity_days = planData.validity_days;
+    if (planData.contact_credits !== undefined) planUpdates.contact_credits = planData.contact_credits;
+    if (planData.interest_credits !== undefined) planUpdates.interest_credits = planData.interest_credits;
+    if (planData.is_popular !== undefined) planUpdates.is_popular = planData.is_popular;
+    if (planData.features !== undefined) planUpdates.features = planData.features;
+    if (planData.color_code !== undefined) planUpdates.color_code = planData.color_code;
+    
+    if (Object.keys(planUpdates).length > 0) {
+      await apiClient.put(`/admin/plans/${plan.id}`, planUpdates);
+    }
+  }
+
+  // Update Distribution Config
+  if (planData.initial_recommended_profiles !== undefined || planData.daily_recommended_increment !== undefined) {
+    await apiClient.put(`/admin/distribution/config/${tierName}`, {
+      initial_count: planData.initial_recommended_profiles,
+      daily_count: planData.daily_recommended_increment
+    });
+  }
+  
+  return true;
 };
 
 /**
@@ -209,9 +259,36 @@ export const deleteIncompleteUsers = async () => {
 // DISTRIBUTION MANAGEMENT
 // ============================================================
 
-export const fetchDistributionHistory = async (limit = 50) => {
-  // Fallback to empty array if not implemented in backend yet
-  return []; 
+export const fetchDistributionHealth = async () => {
+  const data = await apiClient.get('/admin/distribution/health');
+  return {
+    active_users: data.premiumUsers || 0,
+    total_unlocked: data.totalDistributed || 0,
+    empty_users: 0, // Not explicitly tracked in DB right now, but could be added later
+  };
+};
+
+export const triggerDailyDistribution = async () => {
+  const res = await apiClient.post('/admin/distribution/manual', { target: 'all', count: 10, section: 'daily_updates' });
+  return { users_updated: res.data?.distributed || res.distributed || 0, run_date: new Date().toLocaleDateString() };
+};
+
+export const manualPushToUsers = async (pushType, targetVal, pushAllMatches, pushDailyUpdates) => {
+  const count = Math.max(pushAllMatches, pushDailyUpdates);
+  const res = await apiClient.post('/admin/distribution/manual', {
+    target: pushType,
+    tier: pushType === 'tier' ? targetVal : undefined,
+    userId: pushType === 'user' ? targetVal : undefined,
+    section: 'both',
+    count: count > 0 ? count : 10
+  });
+  return { users_processed: res.data?.distributed || res.distributed || 0 };
+};
+
+export const fetchDistributionHistory = async (page = 1, limit = 50, filters = {}) => {
+  return await apiClient.get('/admin/distribution/logs', {
+    params: { page, limit, ...filters }
+  });
 };
 
 export const saveDistributionChange = async (tier, settings, pushMode, adminEmail) => {

@@ -47,6 +47,8 @@ router.put('/payments/:paymentId/reject', paymentsController.reject);
 router.get('/distribution/config', distributionController.getConfig);
 router.put('/distribution/config/:tier', distributionController.updateConfig);
 router.post('/distribution/manual', distributionController.manual);
+router.get('/distribution/logs', distributionController.getLogs);
+router.get('/distribution/health', distributionController.getHealth);
 
 // --- Bulk Import ---
 router.post('/import/users', upload.single('file'), bulkImportController.importUsers);

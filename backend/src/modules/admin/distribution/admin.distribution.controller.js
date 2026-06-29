@@ -25,4 +25,24 @@ export async function manual(req, res, next) {
   } catch (err) { next(err); }
 }
 
-export default { getConfig, updateConfig, manual };
+export async function getLogs(req, res, next) {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 50;
+    const filters = {
+      tier: req.query.tier,
+      type: req.query.type,
+    };
+    const data = await distributionService.getDistributionLogs(page, limit, filters);
+    return success(res, data);
+  } catch (err) { next(err); }
+}
+
+export async function getHealth(req, res, next) {
+  try {
+    const data = await distributionService.getDistributionHealth();
+    return success(res, data);
+  } catch (err) { next(err); }
+}
+
+export default { getConfig, updateConfig, manual, getLogs, getHealth };

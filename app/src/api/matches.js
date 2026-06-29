@@ -9,7 +9,7 @@ import apiClient from './apiClient';
  */
 export const getAllMatches = async (userId, limit = 20, offset = 0) => {
   try {
-    const data = await apiClient.get('/distribution/all-matches', { params: { limit, offset } });
+    const data = await apiClient.get('/matches/all-matches', { params: { limit, offset } });
     return data;
   } catch (err) {
     console.warn('API Error fetching all matches:', err);
@@ -22,7 +22,7 @@ export const getAllMatches = async (userId, limit = 20, offset = 0) => {
  */
 export const getDailyUpdates = async (userId, dailyLimit = 5, offset = 0) => {
   try {
-    const data = await apiClient.get('/distribution/daily', { params: { limit: dailyLimit, offset } });
+    const data = await apiClient.get('/matches/daily-updates', { params: { limit: dailyLimit, offset } });
     return data;
   } catch (err) {
     console.warn('API Error fetching daily updates:', err);
@@ -35,7 +35,7 @@ export const getDailyUpdates = async (userId, dailyLimit = 5, offset = 0) => {
  */
 export const getNearbyProfiles = async (userId, limit = 20, offset = 0) => {
   try {
-    const data = await apiClient.get('/distribution/nearby', { params: { limit, offset } });
+    const data = await apiClient.get('/matches/nearby', { params: { limit, offset } });
     return data;
   } catch (err) {
     console.warn('API Error fetching nearby profiles:', err);

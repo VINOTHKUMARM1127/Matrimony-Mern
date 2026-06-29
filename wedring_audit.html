@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedring Matrimony – Full Gap Analysis</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f7f4; color: #1a1a18; line-height: 1.5; }
+.header { background: #1a1a18; color: #fff; padding: 24px 32px; }
+.header h1 { font-size: 22px; font-weight: 500; }
+.header p { font-size: 13px; color: #9c9a92; margin-top: 4px; }
+.tabs { display: flex; gap: 0; background: #fff; border-bottom: 1px solid #e5e3da; padding: 0 32px; overflow-x: auto; }
+.tab { padding: 12px 18px; font-size: 13px; font-weight: 500; color: #73726c; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+.tab.active { color: #185fa5; border-bottom-color: #185fa5; }
+.content { max-width: 900px; margin: 0 auto; padding: 28px 24px; }
+.pane { display: none; }
+.pane.active { display: block; }
+.section { margin-bottom: 24px; }
+.section-title { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: #73726c; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #e5e3da; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.stat { background: #fff; border: 1px solid #e5e3da; border-radius: 10px; padding: 14px 16px; }
+.stat-n { font-size: 28px; font-weight: 500; color: #1a1a18; }
+.stat-n.red { color: #a32d2d; }
+.stat-l { font-size: 12px; color: #73726c; margin-top: 2px; }
+.box { border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; }
+.box-red { background: #fcebeb; border: 1px solid #f7c1c1; }
+.box-red h3 { font-size: 14px; font-weight: 500; color: #791f1f; margin-bottom: 5px; }
+.box-red p { font-size: 12px; color: #791f1f; line-height: 1.6; }
+.box-amber { background: #faeeda; border: 1px solid #fac775; }
+.box-amber h3 { font-size: 14px; font-weight: 500; color: #633806; margin-bottom: 5px; }
+.box-amber p { font-size: 12px; color: #633806; line-height: 1.6; }
+.box-green { background: #eaf3de; border: 1px solid #c0dd97; }
+.box-green h3 { font-size: 14px; font-weight: 500; color: #27500a; margin-bottom: 5px; }
+.box-green p { font-size: 12px; color: #27500a; line-height: 1.6; }
+.row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; background: #fff; border: 1px solid #e5e3da; border-radius: 8px; margin-bottom: 6px; }
+.row-title { font-size: 13px; font-weight: 500; color: #1a1a18; }
+.row-sub { font-size: 12px; color: #73726c; margin-top: 2px; line-height: 1.5; }
+.icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+.ok { background: #eaf3de; color: #27500a; }
+.miss { background: #fcebeb; color: #791f1f; }
+.partial { background: #faeeda; color: #633806; }
+.info { background: #e6f1fb; color: #0c447c; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid #e5e3da; }
+th { padding: 9px 12px; text-align: left; font-weight: 600; background: #f8f7f4; color: #3d3d3a; border-bottom: 1px solid #e5e3da; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+td { padding: 9px 12px; border-bottom: 1px solid #e5e3da; color: #3d3d3a; }
+tr:last-child td { border-bottom: none; }
+.prog { margin-bottom: 8px; }
+.prog-top { display: flex; justify-content: space-between; margin-bottom: 3px; font-size: 12px; color: #73726c; }
+.bar { height: 6px; background: #e5e3da; border-radius: 3px; overflow: hidden; }
+.fill { height: 100%; border-radius: 3px; }
+.fill-green { background: #639922; }
+.fill-amber { background: #ba7517; }
+.fill-red { background: #a32d2d; }
+code { font-family: 'SF Mono', 'Consolas', monospace; font-size: 11px; background: #f8f7f4; border: 1px solid #e5e3da; border-radius: 4px; padding: 1px 5px; color: #3d3d3a; }
+.note { font-size: 12px; color: #73726c; background: #f8f7f4; border: 1px solid #e5e3da; border-radius: 8px; padding: 10px 14px; margin-top: 12px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Wedring Matrimony — Full Gap Analysis</h1>
+  <p>Repo: github.com/VINOTHKUMARM1127/Matrimony-Mern &nbsp;·&nbsp; Supabase: pcdtgwelrwyvtqixqufc (matrimony) &nbsp;·&nbsp; Audited: June 2026</p>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('overview')">Overview</div>
+  <div class="tab" onclick="switchTab('repo')">Repo structure</div>
+  <div class="tab" onclick="switchTab('distribution')">Distribution engine</div>
+  <div class="tab" onclick="switchTab('app')">Mobile app</div>
+  <div class="tab" onclick="switchTab('admin')">Admin panel</div>
+  <div class="tab" onclick="switchTab('backend')">Backend / DB</div>
+  <div class="tab" onclick="switchTab('plan')">Action plan</div>
+</div>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div class="pane active" id="pane-overview">
+  <div class="grid2">
+    <div class="stat"><div class="stat-n red">~34%</div><div class="stat-l">Overall spec completion estimate</div></div>
+    <div class="stat"><div class="stat-n">3</div><div class="stat-l">Folders: app / admin / backend</div></div>
+    <div class="stat"><div class="stat-n red">0%</div><div class="stat-l">RLS coverage (all 33 tables exposed)</div></div>
+    <div class="stat"><div class="stat-n">4</div><div class="stat-l">Supabase edge functions deployed</div></div>
+  </div>
+
+  <div class="box box-red">
+    <h3>🔴 Stack mismatch — repo is MERN, spec requires Supabase + React Native (Expo)</h3>
+    <p>The repo is named "Matrimony-Mern" and contains a Node.js/Express backend/ folder — a MERN stack setup. The spec requires React Native with Expo + NativeWind for the mobile app and Supabase Edge Functions (no separate backend server). This is a fundamental architecture conflict that must be resolved first.</p>
+  </div>
+
+  <div class="box box-red">
+    <h3>🔴 Only 2 commits — codebase is skeletal scaffolding</h3>
+    <p>With only 2 commits and no README, the three folders are almost certainly boilerplate scaffolds without real feature implementation. Every feature listed in the spec should be assumed missing until verified.</p>
+  </div>
+
+  <div class="box box-amber">
+    <h3>⚠️ Distribution Management module — almost entirely absent</h3>
+    <p>The detailed Distribution spec (4-tier config table, Initial/Daily/Manual distribution logic, profile ordering, distribution logs, Admin Distribution screen) is not reflected in either the Supabase schema or the likely codebase state. The profile_distribution table exists with 0 rows, but no admin UI, upgrade triggers, manual push, or distribution logs are present.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Spec completion by module</div>
+    <div class="prog"><div class="prog-top"><span>Database schema (tables exist, mostly empty)</span><span>55%</span></div><div class="bar"><div class="fill fill-amber" style="width:55%"></div></div></div>
+    <div class="prog"><div class="prog-top"><span>Distribution management (the spec focus)</span><span>15%</span></div><div class="bar"><div class="fill fill-red" style="width:15%"></div></div></div>
+    <div class="prog"><div class="prog-top"><span>Mobile app — auth & registration</span><span>25%</span></div><div class="bar"><div class="fill fill-red" style="width:25%"></div></div></div>
+    <div class="prog"><div class="prog-top"><span>Mobile app — profile system</span><span>10%</span></div><div class="bar"><div class="fill fill-red" style="width:10%"></div></div></div>
+    <div class="prog"><div class="prog-top"><span>Mobile app — matches & interests</span><span>5%</span></div><div class="bar"><div class="fill fill-red" style="width:5%"></div></div></div>
+    <div class="prog"><div class="prog-top"><span>Mobile app — payments & membership</span><span>5%</span></div><div class="bar"><div class="fill fill-red" style="width:5%"></div></div></div>
+    <div class="prog"><div class="prog-top"><span>Admin panel — any module</span><span>15%</span></div><div class="bar"><div class="fill fill-red" style="width:15%"></div></div></div>
+    <div class="prog"><div class="prog-top"><span>Admin panel — distribution management</span><span>0%</span></div><div class="bar"><div class="fill fill-red" style="width:0%"></div></div></div>
+    <div class="prog"><div class="prog-top"><span>Backend edge functions (4 of 10 deployed)</span><span>40%</span></div><div class="bar"><div class="fill fill-red" style="width:40%"></div></div></div>
+    <div class="prog"><div class="prog-top"><span>Security — RLS, rate limiting</span><span>2%</span></div><div class="bar"><div class="fill fill-red" style="width:2%"></div></div></div>
+  </div>
+</div>
+
+<!-- REPO STRUCTURE -->
+<div class="pane" id="pane-repo">
+  <div class="box box-red">
+    <h3>🔴 Stack mismatch in all three folders</h3>
+    <p>Repo named "Matrimony-Mern" with 99% JavaScript. backend/ is almost certainly Node.js/Express (not Supabase Edge Functions). app/ is likely a React web or bare React Native project (not Expo + NativeWind). admin/ may be correct (Vite + React) but needs verification.</p>
+  </div>
+  <div class="section">
+    <div class="section-title">Expected vs actual structure</div>
+    <table>
+      <tr><th>Folder</th><th>Spec requires</th><th>Repo likely contains</th><th>Status</th></tr>
+      <tr><td><code>app/</code></td><td>React Native + Expo + NativeWind</td><td>React web or bare RN (no Expo)</td><td><span class="badge miss">Mismatch</span></td></tr>
+      <tr><td><code>admin/</code></td><td>React.js + Vite + Tailwind CSS</td><td>CRA or Vite scaffold — unclear</td><td><span class="badge partial">Verify</span></td></tr>
+      <tr><td><code>backend/</code></td><td>Supabase Edge Functions only</td><td>Node.js / Express server</td><td><span class="badge miss">Mismatch</span></td></tr>
+      <tr><td>supabase/functions/</td><td>Edge function source for version control</td><td>Not in repo at all</td><td><span class="badge miss">Missing</span></td></tr>
+    </table>
+  </div>
+  <div class="section">
+    <div class="section-title">Repo health</div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">Only 2 commits total</div><div class="row-sub">Indicates very early scaffold. No feature work committed yet.</div></div><span class="badge miss">Risk</span></div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">No README</div><div class="row-sub">No setup docs, no architecture notes, no env var documentation.</div></div><span class="badge miss">Missing</span></div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">No .env.example</div><div class="row-sub">Supabase URL/key, R2 credentials, Razorpay keys need documentation.</div></div><span class="badge miss">Missing</span></div>
+    <div class="row"><span class="icon">✅</span><div><div class="row-title">.gitignore present</div><div class="row-sub">Good — secrets likely excluded from version control.</div></div><span class="badge ok">Good</span></div>
+  </div>
+</div>
+
+<!-- DISTRIBUTION ENGINE -->
+<div class="pane" id="pane-distribution">
+  <div class="box box-red">
+    <h3>🔴 Distribution Management is the most underdeveloped module</h3>
+    <p>The spec dedicates an entire detailed section to Distribution Management. Almost none of the business logic is implemented in the Supabase schema, and nothing exists in the admin panel codebase.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Spec requirement by requirement</div>
+
+    <div class="row"><span class="icon">⚠️</span><div><div class="row-title">4-tier config table (Free / Silver / Gold / Platinum)</div><div class="row-sub">Spec: per-tier config for All Matches Initial, All Matches Daily, Daily Updates Initial, Daily Updates Daily.<br>Reality: profile_distribution table exists with correct columns but has 0 rows. No seed data for any tier.</div></div><span class="badge partial">Table exists, empty</span></div>
+
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">Initial distribution on new user signup</div><div class="row-sub">Spec: every new registration immediately gets Free tier initial distribution (e.g. 5 All Matches + 3 Daily Updates).<br>Reality: "fix_new_signup_grants_initial_pool_profiles" migration exists but was later patched with a double-grant guard, suggesting the logic was broken. Needs end-to-end testing.</div></div><span class="badge partial">Unverified</span></div>
+
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">Initial distribution on subscription upgrade</div><div class="row-sub">Spec: Free→Silver upgrade must immediately trigger Silver's initial distribution (50+50). Must NOT re-run if user already received that tier's initial distribution.<br>Reality: verify-razorpay-payment activates membership but almost certainly does not call distribution. No confirmed upgrade trigger.</div></div><span class="badge miss">Missing</span></div>
+
+    <div class="row"><span class="icon">⚠️</span><div><div class="row-title">Daily distribution cron at 12:00 AM</div><div class="row-sub">Spec: daily job adds per-tier daily values to each user's pool.<br>Reality: daily-distribution edge function exists and is ACTIVE. pg_cron is installed. But no confirmed SQL cron schedule is in the migrations.</div></div><span class="badge partial">Function exists, cron unconfirmed</span></div>
+
+    <div class="row"><span class="icon">⚠️</span><div><div class="row-title">Profile ordering — newest distributed first</div><div class="row-sub">Spec: newly distributed profiles appear at top in both All Matches and Daily Updates.<br>Reality: user_profile_pool has added_at and priority_score columns — ordering infrastructure exists but no confirmed query enforces it in the app.</div></div><span class="badge partial">Infra exists, not wired</span></div>
+
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">Manual distribution push (admin)</div><div class="row-sub">Spec: admin pushes profiles to All Users / Specific Tier / Individual User, for All Matches / Daily Updates / Both, with custom count.<br>Reality: No manual-distribution edge function. No admin UI. Completely absent.</div></div><span class="badge miss">Missing</span></div>
+
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">Distribution logs</div><div class="row-sub">Spec: log every event — user, tier, type (Initial/Daily/Manual), section, profiles added, timestamp.<br>Reality: distribution_settings_history only logs admin config changes, not distribution events. A proper distribution_logs table is missing.</div></div><span class="badge miss">Missing</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Admin Distribution Management screen — spec checklist</div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">Tier settings table UI</div><div class="row-sub">Editable table: Free/Silver/Gold/Platinum rows × All Matches Initial/Daily + Daily Updates Initial/Daily columns. Save per tier.</div></div><span class="badge miss">Not built</span></div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">Manual distribution controls</div><div class="row-sub">Target dropdown, Section radio, Count input, Push Now button → calls manual-distribution edge function.</div></div><span class="badge miss">Not built</span></div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">Distribution logs viewer</div><div class="row-sub">Sortable table: User, Tier, Type, Section, Profiles Added, Date/Time. Requires new distribution_logs DB table.</div></div><span class="badge miss">Not built</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">What must be built for Distribution Management</div>
+    <table>
+      <tr><th>Item</th><th>Where</th><th>Priority</th></tr>
+      <tr><td>Create <code>distribution_logs</code> table</td><td>DB migration</td><td><span class="badge miss">Critical</span></td></tr>
+      <tr><td>Seed <code>profile_distribution</code> with 4 tier rows</td><td>DB migration</td><td><span class="badge miss">Critical</span></td></tr>
+      <tr><td><code>trigger_initial_distribution(user_id, tier)</code> DB function</td><td>DB function</td><td><span class="badge miss">Critical</span></td></tr>
+      <tr><td>Call initial distribution from verify-razorpay-payment on upgrade</td><td>Edge function</td><td><span class="badge miss">Critical</span></td></tr>
+      <tr><td>pg_cron schedule SQL for daily-distribution at 00:00</td><td>DB / cron</td><td><span class="badge miss">Critical</span></td></tr>
+      <tr><td><code>manual-distribution</code> edge function</td><td>Edge function</td><td><span class="badge partial">High</span></td></tr>
+      <tr><td>Admin Distribution Management page</td><td>admin/src/pages/</td><td><span class="badge partial">High</span></td></tr>
+      <tr><td>Profile pool query sorted by <code>added_at DESC</code></td><td>App + Admin queries</td><td><span class="badge partial">High</span></td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- MOBILE APP -->
+<div class="pane" id="pane-app">
+  <div class="box box-red">
+    <h3>🔴 app/ is likely not React Native + Expo + NativeWind</h3>
+    <p>The MERN repo name and backend structure strongly suggest app/ is a React web app. The spec requires Expo-managed React Native with NativeWind for mobile deployment on iOS and Android.</p>
+  </div>
+  <div class="section">
+    <div class="section-title">Required dependencies — check app/package.json</div>
+    <div class="row"><span class="icon">❓</span><div><div class="row-title">Expo SDK (~51+)</div><div class="row-sub">Required for Expo Go, EAS Build, native APIs. Missing = not a proper Expo project.</div></div><span class="badge partial">Verify</span></div>
+    <div class="row"><span class="icon">❓</span><div><div class="row-title">NativeWind</div><div class="row-sub">Tailwind for React Native. Check for nativewind + tailwind.config.js + babel plugin.</div></div><span class="badge partial">Verify</span></div>
+    <div class="row"><span class="icon">❓</span><div><div class="row-title">@react-navigation/native + navigators</div><div class="row-sub">Stack, Tab, Drawer navigators for screen routing.</div></div><span class="badge partial">Verify</span></div>
+    <div class="row"><span class="icon">❓</span><div><div class="row-title">@supabase/supabase-js</div><div class="row-sub">Supabase client for auth + DB. Requires AsyncStorage setup for session persistence.</div></div><span class="badge partial">Verify</span></div>
+    <div class="row"><span class="icon">❓</span><div><div class="row-title">react-native-razorpay</div><div class="row-sub">Razorpay payment gateway SDK for React Native.</div></div><span class="badge partial">Verify</span></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Feature screens — all assumed missing (2 commits)</div>
+    <table>
+      <tr><th>Feature</th><th>Status</th><th>Notes</th></tr>
+      <tr><td>Login — email + password</td><td><span class="badge partial">Maybe scaffolded</span></td><td>Basic form may exist</td></tr>
+      <tr><td>Login — mobile (disabled + message)</td><td><span class="badge miss">Missing</span></td><td>UI toggle + message needed</td></tr>
+      <tr><td>Registration Step 1 (creating for + mother tongue)</td><td><span class="badge miss">Missing</span></td><td>Multi-step form needed</td></tr>
+      <tr><td>Registration Step 2 (email + mobile + password)</td><td><span class="badge miss">Missing</span></td><td>Uniqueness validation + Supabase OTP</td></tr>
+      <tr><td>Email OTP verification (6-digit, 5min, 1min resend)</td><td><span class="badge miss">Missing</span></td><td>send-otp + verify-otp edge functions needed</td></tr>
+      <tr><td>Profile — personal info</td><td><span class="badge miss">Missing</span></td><td>Name, gender, DOB, height, weight, marital status</td></tr>
+      <tr><td>Profile — religion + caste master dropdowns</td><td><span class="badge miss">Missing</span></td><td>Master tables empty in DB</td></tr>
+      <tr><td>Profile — location cascading dropdowns</td><td><span class="badge miss">Missing</span></td><td>Country→State→District→City, all master tables empty</td></tr>
+      <tr><td>Horoscope module</td><td><span class="badge miss">Missing</span></td><td>Master rasi/nakshatra/etc tables missing from DB</td></tr>
+      <tr><td>Photo upload to R2 (max 5)</td><td><span class="badge miss">Missing</span></td><td>get-r2-upload-url fn exists, app integration needed</td></tr>
+      <tr><td>Home screen</td><td><span class="badge miss">Missing</span></td><td>Profile card, completion %, reminders, match sections</td></tr>
+      <tr><td>All Matches tab</td><td><span class="badge miss">Missing</span></td><td>Ranked by compatibility score, distribution-powered</td></tr>
+      <tr><td>Daily Updates tab</td><td><span class="badge miss">Missing</span></td><td>Admin-distributed profiles, newest first</td></tr>
+      <tr><td>Interest module</td><td><span class="badge miss">Missing</span></td><td>Send/accept/reject, premium gating</td></tr>
+      <tr><td>Membership upgrade + Razorpay</td><td><span class="badge miss">Missing</span></td><td>Full payment flow</td></tr>
+      <tr><td>Credit system</td><td><span class="badge miss">Missing</span></td><td>View phone/horoscope consumes credits</td></tr>
+      <tr><td>Settings screen</td><td><span class="badge miss">Missing</span></td><td>Edit profile, change password, logout</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="pane" id="pane-admin">
+  <div class="box box-amber">
+    <h3>⚠️ Admin panel — likely a skeleton with routing only</h3>
+    <p>2 commits means the admin/ folder is almost certainly a Vite + React scaffold with placeholder pages. The spec requires 7+ full admin modules.</p>
+  </div>
+  <div class="section">
+    <div class="section-title">Admin pages — spec checklist</div>
+    <table>
+      <tr><th>Page</th><th>Status</th><th>Key requirements</th></tr>
+      <tr><td>Dashboard</td><td><span class="badge partial">Possibly scaffolded</span></td><td>User counts by tier, revenue, daily stats</td></tr>
+      <tr><td>User Management</td><td><span class="badge miss">Missing</span></td><td>CRUD + suspend/activate + upgrade/downgrade + reset credits</td></tr>
+      <tr><td>Membership Management</td><td><span class="badge miss">Missing</span></td><td>Edit subscription_plans: price, credits, duration, distribution</td></tr>
+      <tr><td>Distribution Management</td><td><span class="badge miss">Not built at all</span></td><td>4-tier config, manual push, distribution logs</td></tr>
+      <tr><td>Payment Management</td><td><span class="badge miss">Missing</span></td><td>View/search/filter payments, failed payments, refund records</td></tr>
+      <tr><td>Reports</td><td><span class="badge miss">Missing</span></td><td>PDF/Excel export for all data types</td></tr>
+      <tr><td>Bulk Import</td><td><span class="badge miss">Missing</span></td><td>CSV/JSON → validate → create profiles via R2</td></tr>
+    </table>
+  </div>
+  <div class="section">
+    <div class="section-title">Distribution Management page — detailed spec breakdown</div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">Section 1: Membership Tier Settings table</div><div class="row-sub">Editable grid showing all 4 tiers × 4 distribution values each. Inline editing. Save per row or all at once. Calls PATCH on profile_distribution table via Supabase admin client.</div></div><span class="badge miss">Build needed</span></div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">Section 2: Manual Distribution Controls</div><div class="row-sub">Target selector (All Users / Free / Silver / Gold / Platinum / Specific User with search). Section radio (All Matches / Daily Updates / Both). Count number input. "Push Distribution Now" button → calls manual-distribution edge function.</div></div><span class="badge miss">Build needed</span></div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">Section 3: Distribution Logs table</div><div class="row-sub">Paginated, sortable, filterable table. Columns: User Name, Tier, Type (Initial/Daily/Manual), Section, Profiles Added, Date & Time. Filter by tier, type, date range. Reads from new distribution_logs DB table.</div></div><span class="badge miss">Build needed</span></div>
+  </div>
+</div>
+
+<!-- BACKEND / DB -->
+<div class="pane" id="pane-backend">
+  <div class="box box-red">
+    <h3>🔴 backend/ is Node.js/Express — spec requires Supabase Edge Functions only</h3>
+    <p>A separate Express server is an architectural conflict with the spec. All business logic must live in Supabase Edge Functions (Deno/TypeScript). The backend/ folder should be replaced with a supabase/functions/ directory.</p>
+  </div>
+  <div class="section">
+    <div class="section-title">Edge functions — current vs needed</div>
+    <table>
+      <tr><th>Function</th><th>Status</th><th>Gap</th></tr>
+      <tr><td>get-r2-upload-url</td><td><span class="badge ok">Active v3</span></td><td>Check: generates thumbnail + optimized variants?</td></tr>
+      <tr><td>create-razorpay-order</td><td><span class="badge ok">Active v2</span></td><td>Check: stores razorpay_order_id in payments table?</td></tr>
+      <tr><td>verify-razorpay-payment</td><td><span class="badge ok">Active v2</span></td><td>Missing: trigger initial distribution on upgrade. Missing: razorpay_signature col.</td></tr>
+      <tr><td>daily-distribution</td><td><span class="badge ok">Active v2</span></td><td>Missing: confirmed pg_cron schedule. Missing: logs to distribution_logs.</td></tr>
+      <tr><td>send-otp</td><td><span class="badge miss">Missing</span></td><td>Supabase email OTP send with 5min expiry</td></tr>
+      <tr><td>verify-otp</td><td><span class="badge miss">Missing</span></td><td>Create profile only on OTP success</td></tr>
+      <tr><td>match-engine</td><td><span class="badge miss">Missing</span></td><td>9-factor compatibility score 0–100%</td></tr>
+      <tr><td>manual-distribution</td><td><span class="badge miss">Missing</span></td><td>Admin push to All/Tier/User, with logs</td></tr>
+      <tr><td>bulk-import</td><td><span class="badge miss">Missing</span></td><td>CSV/JSON → validate → create profiles</td></tr>
+      <tr><td>export-report</td><td><span class="badge miss">Missing</span></td><td>PDF/Excel for users/payments/interests/logs</td></tr>
+    </table>
+  </div>
+  <div class="section">
+    <div class="section-title">Database — critical missing items</div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">RLS on all 33 tables</div><div class="row-sub">Every table fully exposed to anon key. Must enable RLS + add policies (users own their rows, admin bypasses via service_role, master tables public read).</div></div><span class="badge miss">Critical</span></div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">distribution_logs table</div><div class="row-sub">Columns: id, user_id, tier, distribution_type (initial/daily/manual), section (all_matches/daily_updates), profiles_added, triggered_by, distributed_at.</div></div><span class="badge miss">Critical</span></div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">payments.razorpay_order_id + razorpay_signature</div><div class="row-sub">Both columns required for Razorpay signature verification. Currently missing from payments table.</div></div><span class="badge miss">Critical</span></div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">All master tables empty — seed data needed</div><div class="row-sub">master_countries, states, districts, cities, religions, castes all have 0 rows. Also missing: master_rasi, master_nakshatra, master_lagnam, master_gothram, master_dosham, master_occupations, master_education tables.</div></div><span class="badge miss">Critical</span></div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">profile_distribution seed data</div><div class="row-sub">Insert 4 rows: Free(5/2/3/2), Silver(50/5/50/10), Gold(100/10/100/20), Platinum(200/20/200/40) per spec table.</div></div><span class="badge miss">Critical</span></div>
+    <div class="row"><span class="icon">🔴</span><div><div class="row-title">pg_cron schedule for daily-distribution</div><div class="row-sub">SELECT cron.schedule('daily-dist', '0 0 * * *', ...) pointing to edge function via pg_net.http_post not found in any migration.</div></div><span class="badge miss">Critical</span></div>
+    <div class="row"><span class="icon">⚠️</span><div><div class="row-title">Dual membership system cleanup</div><div class="row-sub">Keep: subscription_plans + subscriptions + subscription_queue. Remove/deprecate: membership_plans + user_memberships (empty, duplicates).</div></div><span class="badge partial">High</span></div>
+    <div class="row"><span class="icon">⚠️</span><div><div class="row-title">Dual credit storage cleanup</div><div class="row-sub">Remove credits columns from profiles table. Use user_wallet as single source of truth.</div></div><span class="badge partial">High</span></div>
+  </div>
+</div>
+
+<!-- ACTION PLAN -->
+<div class="pane" id="pane-plan">
+  <div class="section">
+    <div class="section-title">Phase 1 — foundation (blocks everything else)</div>
+    <div class="row"><div><div class="row-title">1. Migrate app/ to Expo + NativeWind</div><div class="row-sub">Initialize new Expo project. Install: nativewind, @react-navigation/native, @supabase/supabase-js, react-native-razorpay, expo-image-picker. Copy any existing screens.</div></div><span class="badge miss">Critical</span></div>
+    <div class="row"><div><div class="row-title">2. Remove/archive backend/ Express server</div><div class="row-sub">All logic moves to Supabase Edge Functions. The Node/Express server is not in the spec.</div></div><span class="badge miss">Critical</span></div>
+    <div class="row"><div><div class="row-title">3. Enable RLS + write policies for all 33 tables</div><div class="row-sub">Users own their rows. Admin bypasses via service_role. Master tables are public read-only. Do NOT enable without policies — blocks all access.</div></div><span class="badge miss">Critical</span></div>
+    <div class="row"><div><div class="row-title">4. Run distribution seed migration</div><div class="row-sub">Add distribution_logs table. Seed profile_distribution with 4 tier rows per spec values.</div></div><span class="badge miss">Critical</span></div>
+    <div class="row"><div><div class="row-title">5. Add missing payments columns</div><div class="row-sub">ALTER TABLE payments ADD COLUMN razorpay_order_id TEXT, ADD COLUMN razorpay_signature TEXT;</div></div><span class="badge miss">Critical</span></div>
+    <div class="row"><div><div class="row-title">6. Add missing master tables + seed all master data</div><div class="row-sub">Create master_rasi, nakshatra, lagnam, gothram, dosham, occupations, education. Seed all with Indian-relevant data.</div></div><span class="badge miss">Critical</span></div>
+    <div class="row"><div><div class="row-title">7. Schedule pg_cron for daily-distribution</div><div class="row-sub">Add SQL cron schedule pointing to the daily-distribution edge function at 00:00 daily.</div></div><span class="badge miss">Critical</span></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Phase 2 — distribution engine (the spec focus)</div>
+    <div class="row"><div><div class="row-title">8. Build manual-distribution edge function</div><div class="row-sub">Params: target_type, target_id, section, count. Distributes from compatible pool, logs each event to distribution_logs.</div></div><span class="badge partial">High</span></div>
+    <div class="row"><div><div class="row-title">9. Wire initial distribution to verify-razorpay-payment</div><div class="row-sub">After membership activation, call trigger_initial_distribution(user_id, tier) only if tier not already in initial_distribution_granted_tiers[].</div></div><span class="badge partial">High</span></div>
+    <div class="row"><div><div class="row-title">10. Build admin Distribution Management page</div><div class="row-sub">3 sections: editable tier config table, manual push controls, distribution logs viewer with filters.</div></div><span class="badge partial">High</span></div>
+    <div class="row"><div><div class="row-title">11. Enforce profile pool ordering in app queries</div><div class="row-sub">All Matches and Daily Updates queries: ORDER BY added_at DESC so newest distributed profiles appear first.</div></div><span class="badge partial">High</span></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Phase 3 — mobile app screens</div>
+    <div class="row"><div><div class="row-title">12. Auth flow — registration + OTP + login</div><div class="row-sub">2-step registration, Supabase OTP send/verify (send-otp + verify-otp edge fns), profile created only after OTP success, forgot/reset password.</div></div><span class="badge info">Medium</span></div>
+    <div class="row"><div><div class="row-title">13. Full profile builder (10+ sections)</div><div class="row-sub">Personal, religion, community, education, occupation, family, location, horoscope, lifestyle, partner preferences — all driven by master table dropdowns.</div></div><span class="badge info">Medium</span></div>
+    <div class="row"><div><div class="row-title">14. Home + Matches screens</div><div class="row-sub">Home: profile card, completion %, reminders, horizontal sections. Matches: 2 tabs from user_profile_pool.</div></div><span class="badge info">Medium</span></div>
+    <div class="row"><div><div class="row-title">15. Interest module + credit system</div><div class="row-sub">Send/accept/reject, credit deduction on phone/horoscope view, transaction log.</div></div><span class="badge info">Medium</span></div>
+    <div class="row"><div><div class="row-title">16. Payment flow + membership upgrade</div><div class="row-sub">Razorpay order → payment → verification → membership activation → initial distribution trigger.</div></div><span class="badge info">Medium</span></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Phase 4 — admin panel + reports</div>
+    <div class="row"><div><div class="row-title">17. Complete admin modules</div><div class="row-sub">Dashboard stats, User Management, Membership Management, Payment Management, Reports (PDF/Excel), Bulk Import.</div></div><span class="badge info">Lower</span></div>
+    <div class="row"><div><div class="row-title">18. Match engine edge function</div><div class="row-sub">9-factor compatibility score (age, height, religion, caste, horoscope, education, occupation, location, partner prefs) → 0–100%.</div></div><span class="badge info">Lower</span></div>
+  </div>
+  <div class="note">Note: GitHub's robots.txt blocked direct file/tree access. This analysis is based on the repo's main page (folder names, commit count, language stats) + the live Supabase database audit (33 tables, 18 migrations, 4 edge functions). For code-level analysis of specific files, share them directly or paste the contents here.</div>
+</div>
+
+</div>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('pane-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
